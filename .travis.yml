@@ -3,8 +3,14 @@ language: python
 python:
   - 3.7
 
+before_install:
+  - chmod +x build.sh
+
 install:
   - pip install -r requirements.txt
 
 services:
   - docker
+
+script:
+  - ./build.sh --ci
