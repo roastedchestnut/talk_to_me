@@ -75,17 +75,17 @@ class Model:
         with tempfile.TemporaryFile() as fp:
             dump(model, fp)
             fp.seek(0)
-            self.s3.Bucket('team07-public').put_object(Body=fp.read(), Bucket='team08-public', Key='/model/model_final.model')
+            self.s3.Bucket('team07-public').put_object(Body=fp.read(), Bucket='team08-public', Key='model/model_final.model')
             fp.close()
 
         with tempfile.TemporaryFile() as fp:
             dump(encoder.classes_, fp)
             fp.seek(0)
-            self.s3.Bucket('team07-public').put_object(Body=fp.read(), Bucket='team08-public', Key='/model/class_names.npy')
+            self.s3.Bucket('team07-public').put_object(Body=fp.read(), Bucket='team08-public', Key='model/class_names.npy')
             fp.close()
 
         with tempfile.TemporaryFile() as fp:
             dump(tokenizer, fp)
             fp.seek(0)
-            self.s3.Bucket('team07-public').put_object(Body=fp.read(), Bucket='team08-public', Key='/model/tokenizer.tokenizer')
+            self.s3.Bucket('team07-public').put_object(Body=fp.read(), Bucket='team08-public', Key='model/tokenizer.tokenizer')
             fp.close()
