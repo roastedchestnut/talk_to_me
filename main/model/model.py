@@ -1,5 +1,4 @@
 import tempfile
-import pickle
 import numpy as np
 import pandas as pd
 import main.preprocess.preprocess as pre
@@ -10,17 +9,18 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Bidirectional, Dense, Embedding
 from tensorflow.keras.metrics import Precision, Recall
 from sklearn.model_selection import train_test_split
-
+from main.util.aws import build_s3
+from joblib import dump
 
 
 class Model:
-    def __init__(self, train_location, test_location, sep):
-        self.train_location = train_location
-        self.test_location = test_location
-        self.sep = sep
+    def __init__(self, dataset_location="../data/iseardataset.csv", embedding_location="../data/glove.6B.100d.txt"):
+        self.dataset_location = dataset_location
+        self.embedding_location = embedding_location
+        self.s3 = build_s3()
 
-    def train(self):
-        dataset = pd.read_csv("../data/iseardataset.csv")
+    def train(self, bucket_name, key):
+        dataset = pd.read_csv(self.dataset_location)
 
         X = []
         sentences = list(dataset['text'])
@@ -45,7 +45,7 @@ class Model:
         X_test = pad_sequences(X_test, padding='post', maxlen=maxlen)
 
         embedding_dict = dict()
-        with open('../data/glove.6B.100d.txt', encoding='UTF-8') as glove_file:
+        with open(self.embedding_location, encoding='UTF-8') as glove_file:
             for line in glove_file:
                 records = line.split()
                 word = records[0]
@@ -72,8 +72,20 @@ class Model:
 
         history = model.fit(X_train, y_train, batch_size=128, epochs=100, verbose=1, validation_split=0.2)
 
-        model.save("data/model_final.model")
-        np.save("data/class_names.npy", encoder.classes_)
+        with tempfile.TemporaryFile() as fp:
+            dump(model, fp)
+            fp.seek(0)
+            self.s3.Bucket('team07-public').put_object(Body=fp.read(), Bucket='team08-public', Key='/model/model_final.model')
+            fp.close()
 
-        with open('data/tokenizer.pickle', 'wb') as handle:
-            pickle.dump(tokenizer, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        with tempfile.TemporaryFile() as fp:
+            dump(encoder.classes_, fp)
+            fp.seek(0)
+            self.s3.Bucket('team07-public').put_object(Body=fp.read(), Bucket='team08-public', Key='/model/class_names.npy')
+            fp.close()
+
+        with tempfile.TemporaryFile() as fp:
+            dump(tokenizer, fp)
+            fp.seek(0)
+            self.s3.Bucket('team07-public').put_object(Body=fp.read(), Bucket='team08-public', Key='/model/tokenizer.tokenizer')
+            fp.close()
