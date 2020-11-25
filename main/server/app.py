@@ -18,14 +18,14 @@ def main():
         df = pd.DataFrame.from_dict(mapped)
         text = df['text'][0]
 
-        predictor = Predict(text,)
+        predictor = Predict(text)
         result = predictor.predict()
 
         return jsonify(
             result
         )
 
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
 
 
 if __name__ == '__main__':

@@ -15,7 +15,6 @@ class Predict:
         self.s3 = build_s3()
 
     def predict(self):
-
         with tempfile.TemporaryFile() as fp:
             self.s3.Bucket('team07-public').download_fileobj(Fileobj=fp, Key='/model/model_final.model')
             fp.seek(0)
