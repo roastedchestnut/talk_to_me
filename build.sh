@@ -2,7 +2,7 @@
 
 export LEIN_ROOT=yes
 
-APP_NAME='data-models'
+APP_NAME='talk_to_me'
 CONTAINER="$ECR_PATH/$APP_NAME"
 
 export ANSIBLE_HOST_KEY_CHECKING=false
