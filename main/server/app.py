@@ -1,7 +1,10 @@
+import sys
+sys.path.append('../../')
+print(sys.path)
+
 import pandas as pd
 from flask import Flask, request, jsonify
 from main.predict.predict import Predict
-
 
 def main():
     app = Flask(__name__)
@@ -20,7 +23,7 @@ def main():
             result
         )
 
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)
 
 
 if __name__ == '__main__':
