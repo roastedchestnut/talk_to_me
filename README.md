@@ -1,8 +1,13 @@
 # talk_to_me
 
-Application Backend of talk_to_me 
+## Introduction
+Application Backend of talk_to_me.
 
-Run on AWS EC2 t3.medium instance
+If you want to find out what talk_to_me is, please check [intro.pdf](intro.pdf)
 
-location of project
-/root/talk_to_me/main/....
+## Environment
+It run on AWS EC2 t3.medium instance.
+For the setup, you need to know initial location of the project, which is
+```
+/root/talk_to_me/main/...
+```
